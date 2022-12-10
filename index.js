@@ -31,7 +31,7 @@ app.post('/', (req, res, next) => {
 
     pool.query(insert, [url, req.body], (err, res) => {
 	if (err) {
-	    next(err);
+	    console.log(err);
 	}
     })
 
@@ -42,11 +42,16 @@ const select = 'SELECT clip FROM clips WHERE url=$1'
 
 app.get('/*', (req, apiResponse, next) => {
     pool.query(select, [req.path.substr(1)], (err, res) => {
-	if (err) {
-	    next(err);
-	}
+	apiResponse.send("hello world!\n");
+	//if (err) {
+	//    console.log(err);
+	//}
 
-	apiResponse.send(res.rows[0]['clip'])
+	//try {
+	//    apiResponse.send(res.rows[0]['clip'])
+	//} catch(e) {
+	//    ;
+	//}
     })
 })
 
