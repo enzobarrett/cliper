@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cmark README.md -t html > index.html

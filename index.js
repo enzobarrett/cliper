@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const { Pool } = require('pg')
+const path = require('path');
 
 const app = express()
 const port = 3000
@@ -46,7 +47,7 @@ app.post('/', (req, res, next) => {
 
 const select = 'SELECT clip FROM clips WHERE url=$1'
 
-app.get('/*', (req, apiResponse, next) => {
+app.get(/\/.{4}/, (req, apiResponse, next) => {
     pool.query(select, [req.path.substr(1)], (err, res) => {
 	if (err) {
 	    next(err);
@@ -57,6 +58,10 @@ app.get('/*', (req, apiResponse, next) => {
 	else
 	    apiResponse.send('invalid url\n');
     })
+})
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'));
 })
 
 app.listen(port, () => {
