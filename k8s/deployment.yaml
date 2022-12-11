@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cliper
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
       app: cliper
