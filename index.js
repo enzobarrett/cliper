@@ -7,7 +7,15 @@ const port = 3000
 
 app.use(bodyParser.text({type: '*/*'}));
 
+var env = process.argv[2] || 'prod';
+
+var host = 'localhost';
+
+if (env == 'prod')
+    host = 'postgres';
+
 const pool = new Pool({
+    host: host,
     user: 'postgres',
     password: 'mycoolpassword'
 })
@@ -26,12 +34,10 @@ const insert = 'INSERT INTO clips VALUES ($1, $2)'
 
 app.post('/', (req, res, next) => {
     const url = makeid(4)
-    
-    console.log(req.body);
 
     pool.query(insert, [url, req.body], (err, res) => {
 	if (err) {
-	    console.log(err);
+	    next(err)
 	}
     })
 
@@ -42,16 +48,14 @@ const select = 'SELECT clip FROM clips WHERE url=$1'
 
 app.get('/*', (req, apiResponse, next) => {
     pool.query(select, [req.path.substr(1)], (err, res) => {
-	apiResponse.send("hello world!\n");
-	//if (err) {
-	//    console.log(err);
-	//}
+	if (err) {
+	    next(err);
+	}
 
-	//try {
-	//    apiResponse.send(res.rows[0]['clip'])
-	//} catch(e) {
-	//    ;
-	//}
+	if (res.rows[0] != undefined)
+	    apiResponse.send(res.rows[0]['clip'] + '\n')
+	else
+	    apiResponse.send('invalid url\n');
     })
 })
 
