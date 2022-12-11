@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cliper
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: cliper
+  template:
+    metadata:
+      labels:
+        app: cliper
+    spec:
+      containers:
+        - name: cliper
+          image: enzobarrett/cliper:###shasum###
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
