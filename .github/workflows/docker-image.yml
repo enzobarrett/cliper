@@ -31,4 +31,25 @@ jobs:
           push: true
           tags: enzobarrett/cliper:${{ github.sha }}
           context: .
-          
+
+      - name: copy yaml files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          overwrite: true
+          source: "./k8s/*.yaml"
+          target: "./cliper/"
+
+      - name: update deployement
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sed -i 's/###shasum###/${{ github.sha }}/g' cliper/k8s/deployment.yaml
+            microk8s kubectl apply -f cliper/k8s/*.yaml
