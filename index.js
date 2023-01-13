@@ -53,7 +53,7 @@ app.get(/\/.{4}/, (req, apiResponse, next) => {
 	    next(err);
 	}
 
-	if (res.rows[0] != undefined)
+	if (res.rows != undefined)
 	    apiResponse.send(res.rows[0]['clip'])
 	else
 	    apiResponse.send('invalid url\n');
