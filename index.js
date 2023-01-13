@@ -15,6 +15,8 @@ var host = 'localhost';
 if (env == 'prod')
     host = 'postgres';
 
+console.log(host);
+
 const pool = new Pool({
     host: host,
     user: 'postgres',
